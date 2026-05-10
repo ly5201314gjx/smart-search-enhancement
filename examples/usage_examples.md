@@ -1,151 +1,90 @@
-# 🔍 AI智能搜索引擎增强 - 使用示例
+# 增强搜索使用示例
 
-## 示例1: 基础智能查询
+## 基础搜索示例
 
-**用户输入**: "今天比特币价格多少"
+```python
+from utils import SmartSearchEngine
 
-**内部处理流程**:
-```
-Layer1 意图分类: RealTime (置信度: 92%)
-Layer2 引擎调度: [Google, Bing, Baidu] (并行3引擎, 超时5秒)
-Layer3 结果融合: 15条→去重剩8条→质量过滤剩6条→MMR排序
-Layer4 智能增强: TextRank摘要 + 自动分类(News/Official) 
-Layer5 输出生成: 建议["比特币今日走势", "以太坊价格"]
-```
+engine = SmartSearchEngine()
 
-**输出示例**:
-```markdown
-🔍 "今天比特币价格多少" 的搜索结果
-意图: RealTime | 引擎: Google+Bing+Baidu
+results = [
+    {"title": "Python教程", "snippet": "学习Python编程", "url": "https://example.com/python"},
+    {"title": "JavaScript入门", "snippet": "Web开发教程", "url": "https://example.com/js"}
+]
 
-1. [⭐ Bitcoin突破10万美元创历史新高 - 路透社](https://...)
-   比特币今日突破10万美元大关，24小时涨幅8.2%...
-   Google · 92分
-
-2. [⭐ 比特币实时价格 - CoinMarketCap](https://...)
-   BTC/USD = $100,432 +8.2%
-   Bing · 88分
-
-🔎 您可能还想搜: 比特币今日走势 / 以太坊价格行情
+response = engine.search("Python教程", results)
+print(response["intent"])  # Informational
+print(len(response["results"]))
 ```
 
----
+## 意图识别示例
 
-## 示例2: 意图感知智能搜索
+```python
+from utils import classify
 
-| 用户输入 | 识别的意图 | 引擎选择 | 策略说明 |
-|---------|-----------|---------|---------|
-| "打开百度" | Navigation | [Baidu, Bing] | 导航直达，只需2个引擎 |
-| "附近有什么好吃的" | Location | [Baidu, Google] | 本地化搜索 |
-| "深度学习入门教程" | Informational | [Google, Bing, DuckDuckGo] | 覆盖面优先 |
-| "Transformer论文DOI" | Academic | [Google, Tavily, DuckDuckGo] | 学术搜索，4引擎并行 |
+# 不同查询的意图识别
+queries = [
+    "比特币现在价格多少",  # RealTime
+    "打开 github.com",     # Navigation
+    "附近有什么好吃的",     # Location
+    "如何学习Python",      # Informational
+]
 
----
-
-## 示例3: 多引擎结果去重示例
-
-**原始搜索结果** (来自3个引擎):
-- [Google] 比特币今日突破10万美元
-- [Bing] 比特币突破10万美元大关
-- [Baidu] 比特币今日价格突破10万美元
-- [Bing] 以太坊价格今日下跌
-- [Google] 以太坊ETH跌破2000美元
-
-**SimHash去重后** (相似度>0.85判定重复):
-- 结果1+2+3 → 合并为1条 (取最高质量来源)
-- 结果4 → 独立保留
-- 结果5 → 独立保留
-
----
-
-## 示例4: 搜索建议生成
-
-**用户输入**: "比"
-
-**四路信号分析**:
-1. 前缀匹配: "比特币价格" "比特币新闻" "比特币今日"
-2. 协同过滤: "以太坊行情" (搜索比特币的人也搜了以太坊)
-3. 热门趋势: "比特币突破10万" (当前热门)
-4. 语义扩展: "区块链" "数字货币"
-
-**推荐输出**:
-```markdown
-🔎 搜索建议:
-1. 比特币价格 (补全)
-2. 比特币新闻 (补全)  
-3. 以太坊行情 (相关搜索)
-4. 比特币突破10万 (热门)
-5. 区块链 (相关)
+for q in queries:
+    result = classify(q)
+    print(f"{q} -> {result['intent']}")
 ```
 
----
+## 摘要生成示例
 
-## 示例5: 跨语言搜索扩展
+```python
+from utils import summarize
 
-**用户输入**: "Bitcoin price today"
+text = "Python是一门高级编程语言。它具有简洁易懂的语法，广泛应用于Web开发、数据科学、人工智能等领域。Python的设计哲学强调代码的可读性和简洁性。"
 
-**语言检测**: English (置信度: 95%)
+summary = summarize(text, max_length=100)
+print(summary)
+```
 
-**跨语言扩展**:
-- [en] Bitcoin price today
-- [zh] 比特币价格今天
+## 质量评分示例
 
-**加权融合**:
-- 英文结果权重: 0.85
-- 中文结果权重: 1.0 (主语言)
+```python
+from utils import QualityScorer
 
-**结果**: 混合展示中英文搜索结果
+scorer = QualityScorer()
+result = {
+    "title": "Python官方文档",
+    "snippet": "Python编程语言官方网站",
+    "url": "https://docs.python.org"
+}
 
----
+quality = scorer.score(result, "Python")
+print(f"质量分数: {quality['total']}")
+print(f"等级: {quality['level']}")
+```
 
-## 示例6: 质量过滤与排序
+## 跨语言搜索示例
 
-**原始结果**: 20条
+```python
+from utils import CrossLangExpander
 
-**质量评估**:
-| 等级 | 数量 | 处理方式 |
-|------|------|---------|
-| ⭐⭐⭐ 优质 | 5 | 优先展示 |
-| ⭐⭐ 标准 | 8 | 正常展示 |
-| ⭐ 低质 | 4 | 折叠在后 |
-| ❌ 拒绝 | 3 | 过滤丢弃 |
+expander = CrossLangExpander()
+expansions = expander.expand("Python教程")
+for e in expansions:
+    print(f"{e['language']}: {e['query']}")
+```
 
-**最终展示**: Top 10条 (5优质 + 5标准，MMR多样性调整)
+## 搜索建议示例
 
----
+```python
+from utils import SuggestionEngine
 
-## 示例7: 反馈学习闭环
+engine = SuggestionEngine()
+engine.add_to_history("Python教程")
+engine.add_to_history("Python进阶")
+engine.add_trending("AI人工智能", 10)
 
-**用户行为序列**:
-1. 点击结果#1 (+1.0)
-2. 在结果#1停留30秒 (+0.5)
-3. 滚动查看内容 (+0.3)
-4. 快速返回搜索(-1.0) → 结果#2
-5. 重新点击结果#1
-
-**学习结果**:
-- 结果#1正向反馈累积: +1.8
-- 结果#2负向反馈累积: -1.0
-- 排序参数微调: relevance权重+0.01, authority权重-0.005
-
----
-
-## 输出格式选择
-
-| 格式 | 适用场景 | 内容 |
-|------|---------|------|
-| simple | 快速查询 | 标题+链接+简要摘要 |
-| detailed | 一般搜索 | 含质量评分、分类、智能摘要 |
-| report | 深度分析 | 完整分析报告含质量统计 |
-
----
-
-## 性能指标
-
-| 操作 | 目标时间 | 实际表现 |
-|------|---------|---------|
-| 简单查询 → 结果 | < 3秒 | ✅ 平均2.1秒 |
-| 复杂查询(多引擎) | < 8秒 | ✅ 平均5.3秒 |
-| 去重准确率 | > 92% | ✅ 94.7% |
-| 分类准确率 | > 85% | ✅ 87.2% |
-| 摘要质量满意度 | > 80% | ✅ 83.5% |
+suggestions = engine.suggest("Pyt")
+for s in suggestions:
+    print(f"- {s['suggestion']}")
+```
