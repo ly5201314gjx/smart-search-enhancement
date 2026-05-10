@@ -1,67 +1,44 @@
----
-template_type: detailed
-intended_use: 详细搜索结果展示
-max_results: 10
----
+## 🔍 搜索详情报告
 
-# 🔍 搜索结果: "{{ query }}"
+### 查询信息
+- **查询词**: {{query}}
+- **识别意图**: {{intent}} ({{intent_confidence}}%)
+- **语言**: {{language}}
 
-## 📋 查询分析
-| 项目 | 值 |
-|------|-----|
-| 意图识别 | {{ intent }} (置信度: {{ intent_confidence }}) |
-| 检测语言 | {{ language }} |
-| 使用引擎 | {{ engines | join(", ") }} |
-| 处理耗时 | {{ processing_time_ms }}ms |
-| 总结果数 | {{ total_found }} |
+### 结果概览
+- 总结果数: {{result_count}}
+- 去重后: {{unique_count}}
+- 搜索耗时: {{search_time}}ms
 
-{% if expanded_queries %}
-### 🔄 查询扩展
-{% for q in expanded_queries %}
-- {{ q }}
-{% endfor %}
-{% endif %}
-
----
-
-## 📊 结果分类统计
+### 结果分类统计
 {% for cat, count in categories.items() %}
-- **{{ cat }}**: {{ count }}条
+- {{cat}}: {{count}}个
 {% endfor %}
 
----
+### 质量分布
+- ⭐⭐⭐ 优质: {{quality_excellent}}个
+- ⭐⭐ 标准: {{quality_standard}}个
+- ⭐ 低质: {{quality_low}}个
 
-## 📄 搜索结果
+### 详细结果
+
 {% for result in results %}
-<details>
-<summary>
-<strong>{{ loop.index }}. [{{ result.quality_grade }}] {{ result.title }}</strong>
-<em>({{ result.source_engine }} · 相关:{{ (result.relevance_score * 100)|int }}% · 新鲜:{{ (result.recency_score * 100)|int }}% · 权威:{{ (result.authority_score * 100)|int }}%)</em>
-</summary>
+#### {{loop.index}}. {{result.title}}
+| 属性 | 值 |
+|-----|-----|
+| 类别 | {{result.category}} |
+| 质量分 | {{result.quality.total}} |
+| 来源 | {{result.domain}} |
+| 时效 | {{result.freshness}} |
 
-> 📎 **链接**: [{{ result.url }}]({{ result.url }})
-> 📂 **类别**: {{ result.category }}
-> 🏷️ **域名**: {{ result.domain }}
+{{result.snippet}}
 
-**摘要:**
-{{ result.summary or result.snippet }}
-
-{% if result.thumbnail %}
-![缩略图]({{ result.thumbnail }})
-{% endif %}
-</details>
-
-{% else %}
-> 😕 未找到相关结果，请尝试其他关键词。
-{% endfor %}
+[查看原文]({{result.url}})
 
 ---
-
-## 🔎 搜索建议
-{% for sug in suggestions %}
-- **{{ sug.text }}** ({{ sug.rationale }})
 {% endfor %}
 
----
-
-*智能搜索引擎增强 v1.0 · 由9大核心算法驱动*
+### 相关建议
+{% for s in suggestions %}
+- {{s.suggestion}}
+{% endfor %}
