@@ -1,0 +1,185 @@
+{
+  "skill": {
+    "name": "增强搜索"
+    "version": "1.0.0",
+    "author": "AI Assistant 乡!",
+    "description": "AI智能搜索引擎增强技能 - 九大核心算法驱动",
+    "category": ["search", "ai", "information-retrieval", "nlp"],
+    "tags": ["search", "AI", "summarization", "classification", "intent-recognition", "cross-language", "result-aggregation", "quality-assessment", "recommendation"],
+    "created_at": "2026-05-09",
+    "updated_at": "2026-05-09"
+  },
+
+  "algorithms": {
+    "intent_classifier": {
+      "version": "1.0",
+      "model": "weighted_logistic_regression",
+      "feature_dim": 12,
+      "categories": ["FactualQA", "Navigation", "Transactional", "Informational", "RealTime", "Location", "Multimedia", "Academic"],
+      "confidence_threshold": 0.7,
+      "fallback_threshold": 0.4,
+      "l2_regularization": 0.01
+    },
+    "result_aggregator": {
+      "version": "1.0",
+      "dedup_method": "simhash_64bit",
+      "simhash_threshold": 0.85,
+      "scoring_weights": {
+        "engine_reliability": 0.15,
+        "relevance_bm25_k1": 1.2,
+        "relevance_bm25_b": 0.75,
+        "relevance_embedding_weight": 0.4,
+        "recency_halflife_default_hours": 72,
+        "authority_domain_weight": 0.4,
+        "authority_trusted_weight": 0.4,
+        "authority_quality_weight": 0.2,
+        "diversity_lambda": 0.5
+      },
+      "mmr_enabled": true
+    },
+    "summarizer": {
+      "version": "1.0",
+      "method": "textrank_extractive",
+      "damping_factor": 0.85,
+      "max_iterations": 100,
+      "convergence_threshold": 0.0001,
+      "redundancy_threshold": 0.75,
+      "max_sentences": 3,
+      "length_strategy": {
+        "serp": 100,
+        "webpage": 300,
+        "news": 500,
+        "academic": 800,
+        "deep": 1200
+      }
+    },
+    "auto_classifier": {
+      "version": "1.0",
+      "categories": ["News", "Official", "Forum", "Social", "Blog", "Video", "Academic", "Shopping", "Unclassified"],
+      "classification_threshold": 0.6,
+      "temperature": 0.5,
+      "embedding_dim": 128
+    },
+    "quality_scorer": {
+      "version": "1.0",
+      "dimensions": {
+        "completeness_weight": 0.15,
+        "freshness_weight": 0.20,
+        "trustworthiness_weight": 0.25,
+        "readability_weight": 0.10,
+        "coverage_weight": 0.20,
+        "richness_weight": 0.10
+      },
+      "thresholds": {
+        "excellent": 80,
+        "standard": 60,
+        "low_quality": 40
+      }
+    },
+    "suggestion_engine": {
+      "version": "1.0",
+      "weights": {
+        "prefix_match": 0.35,
+        "collaborative": 0.25,
+        "trending": 0.25,
+        "semantic_expansion": 0.15
+      },
+      "top_k": 5,
+      "recency_decay_beta": 0.1
+    },
+    "cross_lang_expander": {
+      "version": "1.0",
+      "bridge_languages": ["zh", "en", "ja", "ko"],
+      "weight_map": {
+        "zh": 1.0,
+        "en": 0.85,
+        "ja": 0.70,
+        "ko": 0.70,
+        "other": 0.50
+      },
+      "primary_confidence_threshold": 0.95
+    },
+    "performance_optimizer": {
+      "version": "1.0",
+      "timeouts": {
+        "RealTime": 5,
+        "default": 10,
+        "Academic": 30
+      },
+      "early_stop_enabled": true,
+      "early_stop_ratio": 0.5
+    },
+    "feedback_learner": {
+      "version": "1.0",
+      "learning_rate": 0.01,
+      "positive_signals": {
+        "click": 1.0,
+        "dwell_30s": 0.5,
+        "scroll": 0.3,
+        "copy": 0.8
+      },
+      "negative_signals": {
+        "quick_return": -1.0,
+        "click_and_back": -0.8,
+        "skip_to_other": -0.5,
+        "no_interaction": -0.2
+      }
+    }
+  },
+
+  "configurations": {
+    "defaults": {
+      "output_format": "detailed",
+      "max_results": 10,
+      "auto_suggest": true,
+      "cross_lang_search": true,
+      "quality_filter": true,
+      "diversity_boost": true,
+      "summary_enabled": true,
+      "auto_classify": true
+    },
+    "logging": {
+      "level": "INFO",
+      "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+      "file": "smart_search_engine.log"
+    }
+  },
+
+  "dependencies": {
+    "required_packages": [
+      "various_search",
+      "google_search",
+      "duckduckgo",
+      "tavily",
+      "extended_http_tools",
+      "code_runner",
+      "extended_file_tools"
+    ],
+    "python_packages": [
+      "numpy>=1.24.0",
+      "scikit-learn>=1.3.0",
+      "nltk>=3.8.0",
+      "jieba>=0.42.1",
+      "networkx>=3.0"
+    ]
+  },
+
+  "examples": {
+    "basic_search": {
+      "description": "基础智能搜索",
+      "command": "帮我搜索一下最新的AI新闻"
+    },
+    "comparison_search": {
+      "description": "对比搜索（多引擎对比）",
+      "command": "分别用谷歌和百度搜一下weather"
+    },
+    "smart_analysis": {
+      "description": "智能分析搜索",
+      "command": "帮我搜一下比特币行情，并做一个智能分析汇总"
+    },
+    "cross_lang_search": {
+      "description": "跨语言搜索",
+      "command": "搜一下日本最新的机器人技术"
+    }
+  }
+}
